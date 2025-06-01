@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mObywatel 2.0 (symulacja)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+    }
+    header {
+      background-color: #d32f2f;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+    .container {
+      padding: 1rem;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .card {
+      background-color: #f1f1f1;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1rem;
+    }
+    .grid-item {
+      text-align: center;
+      padding: 1rem;
+      background-color: #f8f8f8;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid #ccc;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0;
+    }
+    .bottom-nav a {
+      text-align: center;
+      text-decoration: none;
+      color: #d32f2f;
+      font-size: 0.9rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 0.7rem;
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    mObywatel 2.0 (symulacja)
+  </header>
+  <div class="container" id="home">
+    <div class="section-title">Dokumenty</div>
+    <div class="card">
+      <div><strong>mDowód</strong></div>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/ID_card_PL_sample_2021.png/600px-ID_card_PL_sample_2021.png" alt="mDowód" width="100%">
+    </div>
+    <div class="section-title">Usługi</div>
+    <div class="grid">
+      <div class="grid-item">Punkty karne</div>
+      <div class="grid-item">Historia pojazdu</div>
+      <div class="grid-item">eRecepta</div>
+      <div class="grid-item">Jakość powietrza</div>
+      <div class="grid-item">Bilkom</div>
+    </div>
+  </div>
+
+  <div class="container hidden" id="account">
+    <div class="section-title">Stwórz konto</div>
+    <form class="form-section" id="registerForm">
+      <input type="text" placeholder="Imię" id="fname" required>
+      <input type="text" placeholder="Nazwisko" id="lname" required>
+      <input type="text" placeholder="Imię ojca" id="father" required>
+      <input type="text" placeholder="Imię matki" id="mother" required>
+      <input type="text" placeholder="PESEL" id="pesel" required>
+      <input type="date" placeholder="Data urodzenia" id="dob" required>
+      <button type="submit">Zarejestruj</button>
+    </form>
+  </div>
+
+  <div class="container hidden" id="profile">
+    <div class="section-title">Twój Profil</div>
+    <div class="card" id="profileData"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="#" onclick="navigate('home')">Start</a>
+    <a href="#" onclick="navigate('account')">Stwórz konto</a>
+    <a href="#" onclick="navigate('profile')">Profil</a>
+  </div>
+
+  <script>
+    const navigate = (section) => {
+      document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+      document.getElementById(section).classList.remove('hidden');
+    };
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const data = {
+        imie: document.getElementById('fname').value,
+        nazwisko: document.getElementById('lname').value,
+        ojciec: document.getElementById('father').value,
+        matka: document.getElementById('mother').value,
+        pesel: document.getElementById('pesel').value,
+        dataUrodzenia: document.getElementById('dob').value
+      };
+      localStorage.setItem('userData', JSON.stringify(data));
+      alert("Zarejestrowano użytkownika!");
+      navigate('profile');
+      loadProfile();
+    });
+
+    function loadProfile() {
+      const data = JSON.parse(localStorage.getItem('userData'));
+      if (!data) return;
+      document.getElementById('profileData').innerHTML = `
+        <p><strong>Imię:</strong> ${data.imie}</p>
+        <p><strong>Nazwisko:</strong> ${data.nazwisko}</p>
+        <p><strong>Imię ojca:</strong> ${data.ojciec}</p>
+        <p><strong>Imię matki:</strong> ${data.matka}</p>
+        <p><strong>PESEL:</strong> ${data.pesel}</p>
+        <p><strong>Data urodzenia:</strong> ${data.dataUrodzenia}</p>
+      `;
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>
